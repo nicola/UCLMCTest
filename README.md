@@ -39,4 +39,7 @@ $ wget https://dl.dropboxusercontent.com/s/y8xvj42aabajauz/stanford-parser-3.5.0
 jython -Dpython.path=stanford-parser.jar:stanford-parser-3.5.0-models.jar parsecache.py mc[160|500][dev|train]
 ```
 
+| Description | mc160.dev | mc500.dev | mc160.train |
+| --- | ------ | ------ | --- |
+| Baseline (BOW) | 0.627777777778 | 0.560833333333 | 0.61130952381 |
 
