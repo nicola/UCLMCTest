@@ -10,6 +10,10 @@ from sklearn.metrics import accuracy_score
 from vectors import results, YVectorQA, YVectorQ
 from grading import grading
 
+from sklearn.cross_validation import train_test_split
+from sklearn.grid_search import GridSearchCV
+from sklearn.metrics import classification_report
+
 
 # methods = [dict(name="Baseline (BOW)", score=bow.predict, opts=None)]
 def train(stories, solutions, opts=None):
@@ -17,13 +21,57 @@ def train(stories, solutions, opts=None):
     # features = [m["score"](stories, opts=m["opts"]) for m in methods]
     # X = [tuple(t,) for t in np.asarray(features).T]
 
-    X = np.array(zip(
+    X_train = np.array(zip(
         *[feature(stories) for feature in opts["features"]]
     ))
-    y = np.array(YVectorQA(stories, solutions))
-    C = 4.0
+    y_train = np.array(YVectorQA(stories, solutions))
 
-    return svm.SVC(kernel='linear', C=C, probability=True).fit(X, y)
+    test_stories = list(storyparser('mc160.dev'))
+    test_answers = list(answers('mc160.dev'))
+    X_test = np.array(zip(
+        *[feature(test_stories) for feature in opts["features"]]
+    ))
+    y_test = np.array(YVectorQA(test_stories, test_answers))
+
+    # X_train, X_test, y_train, y_test = train_test_split(
+    #     X, y,
+    #     test_size=0.3,
+    #     random_state=0
+    # )
+
+    tuned_parameters = [{
+        'kernel': ['rbf'], 'gamma': [1e-3, 1e-4],
+        'C': [1, 10, 100, 1000]
+    }, {
+        'kernel': ['linear'], 'C': [1, 10, 100, 1000]
+    }]
+
+    clf = svm.SVC(C=4.0, probability=True)
+    fit = clf.fit(X_train, y_train)
+
+    print("Best parameters set found on development set:")
+    print()
+    print(clf.best_estimator_)
+    print()
+    print("Grid scores on development set:")
+    print()
+    for params, mean_score, scores in clf.grid_scores_:
+        print("%0.3f (+/-%0.03f) for %r"
+              % (mean_score, scores.std() / 2, params))
+    print()
+
+    print("Detailed classification report:")
+    print()
+    print("The model is trained on the full development set.")
+    print("The scores are computed on the full evaluation set.")
+    print()
+    y_true, y_pred = y_test, clf.predict(X_test)
+    print(classification_report(y_true, y_pred))
+    print()
+
+    print "Best estimator", clf.best_estimator_
+
+    return fit
 
 
 def predict(stories, opts=None):

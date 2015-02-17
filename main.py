@@ -14,38 +14,38 @@ testsets = [
 ]
 
 methods = [
-    dict(
-        name="Baseline (BOW)",
-        score=bow.predict,
-        opts=dict(
-            testsets=testsets
-        )
-    ),
-    dict(
-        name="Baseline (BOW) all",
-        score=bow.predictAll,
-        opts=dict(
-            testsets=testsets
-        )
-    ),
-    dict(
-        name="SVM (BOW) train mc160train",
-        score=svm.predict,
-        opts=dict(
-            trainsets=["mc160.train"],
-            testsets=["mc160.dev"],
-            features=[bow.predict]
-        )
-    ),
-    dict(
-        name="SVM (BOW) train mc500train",
-        score=svm.predict,
-        opts=dict(
-            trainsets=["mc500.train"],
-            testsets=["mc500.dev"],
-            features=[bow.predict]
-        )
-    ),
+    # dict(
+    #     name="Baseline (BOW)",
+    #     score=bow.predict,
+    #     opts=dict(
+    #         testsets=testsets
+    #     )
+    # ),
+    # dict(
+    #     name="Baseline (BOW) all",
+    #     score=bow.predictAll,
+    #     opts=dict(
+    #         testsets=testsets
+    #     )
+    # ),
+    # dict(
+    #     name="SVM (BOW) train mc160train",
+    #     score=svm.predict,
+    #     opts=dict(
+    #         trainsets=["mc160.train"],
+    #         testsets=["mc160.dev"],
+    #         features=[bow.predict]
+    #     )
+    # ),
+    # dict(
+    #     name="SVM (BOW) train mc500train",
+    #     score=svm.predict,
+    #     opts=dict(
+    #         trainsets=["mc500.train"],
+    #         testsets=["mc500.dev"],
+    #         features=[bow.predict]
+    #     )
+    # ),
     dict(
         name="SVM (BOW+BOWall) train mc160train",
         score=svm.predict,
@@ -55,15 +55,15 @@ methods = [
             features=[bow.predict, bow.predictAll]
         )
     ),
-    dict(
-        name="SVM (BOW+BOWall) train mc500train",
-        score=svm.predict,
-        opts=dict(
-            trainsets=["mc500.train"],
-            testsets=["mc500.dev"],
-            features=[bow.predict, bow.predictAll]
-        )
-    )
+    # dict(
+    #     name="SVM (BOW+BOWall) train mc500train",
+    #     score=svm.predict,
+    #     opts=dict(
+    #         trainsets=["mc500.train"],
+    #         testsets=["mc500.dev"],
+    #         features=[bow.predict, bow.predictAll]
+    #     )
+    # )
 ]
 
 results = {}
