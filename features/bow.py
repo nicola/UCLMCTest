@@ -11,10 +11,13 @@ import os
 STOPWORDS = nltk.corpus.stopwords.words('english')
 
 
-def bow(s1, s2, bow_filter=None):
+def bow(s1, s2, bow_filter=None, skip_none=False):
     if bow_filter:
         s1 = [t for t in s1 if t[2] == bow_filter]
         s2 = [t for t in s2 if t[2] == bow_filter]
+    if skip_none:
+        s1 = [t for t in s1 if t[0] != None and t[1] != None]
+        s2 = [t for t in s2 if t[0] != None and t[1] != None]
 
     set1 = {l for w, l, p in s1 if l not in STOPWORDS} \
         | {w for w, l, p in s1 if w not in STOPWORDS}

@@ -19,14 +19,16 @@ methods = [
         name="BOW NN",
         score=bow.predictAllNN,
         opts=dict(
-            testsets=testsets
+            testsets=testsets,
+            pickle=True
         )
     ),
     dict(
         name="BOW NP",
         score=bow.predictAllVB,
         opts=dict(
-            testsets=testsets
+            testsets=testsets,
+            pickle=True
         )
     ),
     dict(
@@ -41,7 +43,8 @@ methods = [
         name="Baseline (BOW) all",
         score=bow.predictAll,
         opts=dict(
-            testsets=testsets
+            testsets=testsets,
+            pickle=True
         )
     ),
     dict(
@@ -50,7 +53,8 @@ methods = [
         opts=dict(
             trainsets=["mc160.train"],
             testsets=["mc160.dev"],
-            features=[bow.predict]
+            features=[bow.predict],
+            pickle=True
         )
     ),
     dict(
@@ -59,7 +63,8 @@ methods = [
         opts=dict(
             trainsets=["mc500.train"],
             testsets=["mc500.dev"],
-            features=[bow.predict]
+            features=[bow.predict],
+            pickle=True
         )
     ),
     dict(
@@ -68,7 +73,8 @@ methods = [
         opts=dict(
             trainsets=["mc160.train"],
             testsets=["mc160.dev"],
-            features=[bow.predict, bow.predictAll]
+            features=[bow.predict, bow.predictAll],
+            pickle=True
         )
     ),
     dict(
@@ -77,7 +83,8 @@ methods = [
         opts=dict(
             trainsets=["mc160.train"],
             testsets=["mc160.dev"],
-            features=[bow.predictComplement, bow.predictAll, bow.predictAllNN, bow.predictAllVB]
+            features=[bow.predictComplement, bow.predictAll, bow.predictAllNN, bow.predictAllVB],
+            pickle=True
         )
     ),
     dict(
@@ -86,7 +93,8 @@ methods = [
         opts=dict(
             trainsets=["mc500.train"],
             testsets=["mc500.dev"],
-            features=[bow.predict, bow.predictAll]
+            features=[bow.predict, bow.predictAll],
+            pickle=True
         )
     ),
     dict(
@@ -94,7 +102,8 @@ methods = [
         score=logreg.predict,
         opts=dict(
             trainsets=["mc160.train"],
-            testsets=["mc160.dev"]
+            testsets=["mc160.dev"],
+            pickle=True
         )
     ),
     dict(
@@ -102,7 +111,8 @@ methods = [
         score=logreg.predict,
         opts=dict(
             trainsets=["mc500.train"],
-            testsets=["mc500.dev"]
+            testsets=["mc500.dev"],
+            pickle=True
         )
     ),
     dict(
@@ -116,7 +126,8 @@ methods = [
                 bow.predictComplement
             ],
             trainsets=["mc160.train"],
-            testsets=["mc160.dev"]
+            testsets=["mc160.dev"],
+            pickle=True
         )
     ),
     dict(
@@ -130,7 +141,8 @@ methods = [
                 bow.predictComplement
             ],
             trainsets=["mc500.train"],
-            testsets=["mc500.dev"]
+            testsets=["mc500.dev"],
+            pickle=True
         )
     )
 ]
