@@ -143,7 +143,7 @@ def XVectorQA(stories, norm=None, sigmoid_k=50,
     X = []
     for story in stories:
         for q, question in enumerate(story.questions):
-            if mode and question.mode != mode:
+            if type(mode) is int and question.mode != mode:
                 continue
 
             corpus = story
@@ -178,7 +178,7 @@ def XVectorQ(stories, norm=None, sigmoid_k=100, mode=None,
     X = []
     for story in stories:
         for q, question in enumerate(story.questions):
-            if mode and question.mode != mode:
+            if type(mode) is int and question.mode != mode:
                 continue
 
             corpus = story
@@ -239,7 +239,7 @@ def baseline(stories, solutions, mode=None, debug=False):
 def predict(stories, opts=None):
     return XVectorQA(
         stories,
-        mode=opts["mode"],
+        mode=opts["mode"] if "mode" in opts else None,
         norm="question",
         select_f=opts["select_f"] if "select_f" in opts else None,
         select_limit=opts["select_limit"] if "select_limit" in opts else None,

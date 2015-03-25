@@ -32,9 +32,9 @@ def YVectorQA(stories, solutions, mode=None):
     Y = []
     for story, solution in zip(stories, solutions):
         for q, question in enumerate(story.questions):
-            if mode and question.mode != mode:
+            if type(mode) is int and question.mode != mode:
                 continue
-            solution_n = int(solution[q].encode("hex")) - 41 # From A to 0
+            solution_n = int(solution[q].encode("hex")) - 41  # From A to 0
             correct_answers = [int(a == solution_n) for a, _ in enumerate(question.answers)]
             Y = Y + correct_answers
     return Y
@@ -44,8 +44,8 @@ def YVectorQ(stories, solutions, mode=None):
     Y = []
     for story, solution in zip(stories, solutions):
         for q, question in enumerate(story.questions):
-            if mode and question.mode != mode:
+            if type(mode) is int and question.mode != mode:
                 continue
-            solution_n = int(solution[q].encode("hex")) - 41 # From A to 0
+            solution_n = int(solution[q].encode("hex")) - 41  # From A to 0
             Y.append(solution_n)
     return Y

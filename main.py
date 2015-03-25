@@ -140,8 +140,7 @@ methods = [
             testsets=[
                 ["mc160.dev", "mc160.train"],
                 ["mc500.dev", "mc500.train"]
-            ],
-            mode=Question.MULTIPLE
+            ]
         )
     ),
     #dict(
