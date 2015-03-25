@@ -76,6 +76,20 @@ def _filter160(stories, opts=None):
         score_f=fscore160,
     )
 
+def _rtefilter160(stories, opts=None):
+    return bow.XVectorQA(
+        stories,
+        norm="question",
+        score_f=fscore160,
+    )
+
+def _rtefilter500(stories, opts=None):
+    return bow.XVectorQA(
+        stories,
+        norm="question",
+        score_f=fscore500,
+    )
+
 
 def _filter500(stories, opts=None):
     return bow.XVectorQA(
@@ -133,22 +147,28 @@ methods = [
     #         testsets=testsets
     #     )
     # ),
-    dict(
-        name="Baseline (BOW)",
-        score=bow.predict,
-        opts=dict(
-            testsets=[
-                ["mc160.dev", "mc160.train"],
-                ["mc500.dev", "mc500.train"]
-            ]
-        )
-    ),
-    #dict(
+    # dict(
+    #     name="Baseline (BOW)",
+    #     score=bow.predictAll,
+    #     select_f=bow.bow_qa_select,
+    #     select_limit=3,
+    #     opts=dict(
+    #         testsets=[
+    #             ["mc160.dev", "mc160.train"],
+    #             ["mc500.dev", "mc500.train"]
+    #         ]
+    #     )
+    # ),
+    # dict(
     #     name="BOW coref",
     #     score=bow.predict,
     #     opts=dict(
-    #         testsets=testsets,
-    #         bow_f=bow.coref_bow
+    #         testsets=[
+    #             ["mc160.dev", "mc160.train"],
+    #             ["mc500.dev", "mc500.train"]
+    #         ],
+    #         bow_f=bow.coref_bow,
+    #         mode=Question.MULTIPLE
     #     )
     # ),
     # dict(
@@ -357,23 +377,23 @@ methods = [
     #         testsets=["mc500.test"]
     #     )
     # ),
-    # dict(
-    #     name="SVM (bigmix) mc160train",
-    #     score=svmreg.predict,
-    #     opts=dict(
-    #         features=[
-    #             _bowcoref,
-    #             _hypbow,
-    #             _bowall1,
-    #             _bowall2,
-    #             _hypselect,
-    #             _hypselect2,
-    #             _filter160
-    #         ],
-    #         trainsets=["mc160.train"],
-    #         testsets=["mc160.test"]
-    #     )
-    # ),
+    dict(
+        name="SVM (bigmix) mc160train",
+        score=svmreg.predict,
+        opts=dict(
+            features=[
+                _bowcoref,
+                _hypbow,
+                _bowall1,
+                _bowall2,
+                _hypselect,
+                _hypselect2,
+                _rtefilter160
+            ],
+            trainsets=["mc160.train"],
+            testsets=["mc160.test"]
+        )
+    ),
     # dict(
     #     name="SVM (bigmix) mc500train",
     #     score=svmreg.predict,

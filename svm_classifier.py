@@ -21,7 +21,7 @@ def train(stories, solutions, opts=None):
         *[loadOrPredict(dict(name=feature.__name__), stories, opts=dict(pickle=True), pickle_label=opts['trainsets']) for feature in opts["features"]]
     ))
     y = np.array(YVectorQA(stories, solutions))
-    C = 2.5
+    C = 6
 
     return svm.SVC(kernel='linear', C=C, probability=True).fit(X, y)
 
