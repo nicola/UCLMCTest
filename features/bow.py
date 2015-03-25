@@ -239,6 +239,7 @@ def baseline(stories, solutions, mode=None, debug=False):
 def predict(stories, opts=None):
     return XVectorQA(
         stories,
+        mode=opts["mode"],
         norm="question",
         select_f=opts["select_f"] if "select_f" in opts else None,
         select_limit=opts["select_limit"] if "select_limit" in opts else None,

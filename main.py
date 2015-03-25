@@ -1,4 +1,4 @@
-from classes import storyparser, answers, loadOrPredict
+from classes import storyparser, answers, loadOrPredict, Question
 from grading import grading
 from vectors import results, YVectorQ
 from features import bow
@@ -10,12 +10,12 @@ import svm_classifier as svmreg
 import numpy as np
 
 testsets = [
-     "mc160.dev",
-     "mc500.dev",
-     "mc160.train",
-     "mc500.train",
-     ["mc160.dev", "mc160.train"],
-     ["mc500.dev", "mc500.train"],
+    "mc160.dev",
+    "mc500.dev",
+    "mc160.train",
+    "mc500.train",
+    ["mc160.dev", "mc160.train"],
+    ["mc500.dev", "mc500.train"],
     "mc160.test",
     "mc500.test"
 ]
@@ -66,7 +66,7 @@ def _hypselect2(stories, opts=None):
         score_f=bow.scoreAll,
         select_f=hyp_qa_select,
         select_limit=3,
-        bow_f=bow.coref_bow
+        bow_f=bow.coref_bowall
     )
 
 def _filter160(stories, opts=None):
@@ -111,13 +111,14 @@ def bigMixSum(stories, opts=None):
     return sum_v
 
 methods = [
-    #dict(
-    #    name="_filter500",
-    #    score=_filter500,
+    # dict(
+    #    name="_filter160",
+    #    score=_filter160,
     #    opts=dict(
-    #        testsets=["mc500.test"],
+    #        testsets=testsets,
+    #        pickle=True
     #    )
-    #),
+    # ),
     # dict(
     #     name="BOW NN",
     #     score=bow.predictAllNN,
@@ -132,13 +133,17 @@ methods = [
     #         testsets=testsets
     #     )
     # ),
-    # dict(
-    #     name="Baseline (BOW)",
-    #     score=bow.predict,
-    #     opts=dict(
-    #         testsets=testsets
-    #     )
-    # ),
+    dict(
+        name="Baseline (BOW)",
+        score=bow.predict,
+        opts=dict(
+            testsets=[
+                ["mc160.dev", "mc160.train"],
+                ["mc500.dev", "mc500.train"]
+            ],
+            mode=Question.MULTIPLE
+        )
+    ),
     #dict(
     #     name="BOW coref",
     #     score=bow.predict,
@@ -321,7 +326,7 @@ methods = [
     # ),
     # dict(
     #     name="SVM (bigmix) mc160train",
-    #     score=svmreg.predict,
+    #     score=logreg.predict,
     #     opts=dict(
     #         features=[
     #             _bowcoref,
@@ -329,15 +334,16 @@ methods = [
     #             _bowall1,
     #             _bowall2,
     #             _hypselect,
-    #             _hypselect2
+    #             _hypselect2,
+    #             _filter160
     #         ],
     #         trainsets=["mc160.train"],
-    #         testsets=["mc160.dev"]
+    #         testsets=["mc160.test"]
     #     )
     # ),
     # dict(
     #     name="SVM (bigmix) mc500train",
-    #     score=svmreg.predict,
+    #     score=logreg.predict,
     #     opts=dict(
     #         features=[
     #             _bowcoref,
@@ -345,10 +351,11 @@ methods = [
     #             _bowall1,
     #             _bowall2,
     #             _hypselect,
-    #             _hypselect2
+    #             _hypselect2,
+    #             _filter500
     #         ],
     #         trainsets=["mc500.train"],
-    #         testsets=["mc500.dev"]
+    #         testsets=["mc500.test"]
     #     )
     # ),
     # dict(
@@ -395,12 +402,14 @@ for method in methods:
 
 for method in methods:
     name = method["name"]
+    mode = None if "mode" not in method["opts"] else method["opts"]["mode"]
 
     for testset in method["opts"]["testsets"]:
         stories = list(storyparser(testset))
         solutions = list(answers(testset))
-        true = YVectorQ(stories, solutions)
+        true = YVectorQ(stories, solutions, mode=mode)
         scores = loadOrPredict(method, stories, method["opts"], pickle_label=str(testset))
+        print len(scores), len(true), mode
         grades = grading(scores, true)
         results[name][str(testset)] = sum(grades) / len(grades)
         print results[name][str(testset)]
