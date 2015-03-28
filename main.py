@@ -31,7 +31,8 @@ def _hypbow(stories, opts=None):
     return bow.XVectorQA(
         stories,
         norm="question",
-        score_f=hypbowscore
+        score_f=hypbowscore,
+        mode=opts["mode"] if "mode" in opts else None
     )
 def _bowall1(stories, opts=None):
     return bow.XVectorQA(
@@ -328,10 +329,10 @@ methods = [
     #     )
     # ),
     # dict(
-    #     name="_hypselect",
-    #     score=_hypselect,
+    #     name="_hypselect2",
+    #     score=_hypselect2,
     #     opts=dict(
-    #         testsets=testsets,
+    #         testsets=["mc160.dev"],
     #         pickle=True
     #     )
     # ),
@@ -377,23 +378,22 @@ methods = [
     #         testsets=["mc500.test"]
     #     )
     # ),
-    dict(
-        name="SVM (bigmix) mc160train",
-        score=svmreg.predict,
-        opts=dict(
-            features=[
-                _bowcoref,
-                _hypbow,
-                _bowall1,
-                _bowall2,
-                _hypselect,
-                _hypselect2,
-                _rtefilter160
-            ],
-            trainsets=["mc160.train"],
-            testsets=["mc160.test"]
-        )
-    ),
+    # dict(
+    #     name="SVM (bigmix) mc160train",
+    #     score=svmreg.predict,
+    #     opts=dict(
+    #         features=[
+    #             _bowcoref,
+    #             _hypbow,
+    #             _bowall1,
+    #             _bowall2,
+    #             _hypselect,
+    #             _hypselect2
+    #         ],
+    #         trainsets=["mc500.train"],
+    #         testsets=["mc500.test"]
+    #     )
+    # ),
     # dict(
     #     name="SVM (bigmix) mc500train",
     #     score=svmreg.predict,
