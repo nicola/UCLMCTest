@@ -459,6 +459,12 @@ def savePickle(vector, pickle_name):
             print "creating pickle", pickle_name
             pickle.dump(vector, fl)
 
+def loadPickle(pickle_name):
+    fpath = os.path.abspath(os.path.dirname(__file__) + "/pickles/" + pickle_name + ".pickle")
+    fl = open(fpath, "rb")
+    print "using pickle", pickle_name
+    return pickle.load(fl)
+
 def loadOrPredict(method, stories, opts, pickle_label=None):
     if "pickle" in opts and pickle_label:
         if type(pickle_label) is list and len(pickle_label) == 1:

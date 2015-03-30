@@ -1,4 +1,4 @@
-from classes import storyparser, answers, loadOrPredict, Question, savePickle
+from classes import storyparser, answers, loadOrPredict, Question, savePickle, loadPickle
 from grading import grading
 from vectors import results, YVectorQ
 from features import bow
@@ -14,11 +14,19 @@ testsets = [
     "mc500.dev",
     "mc160.train",
     "mc500.train",
-    ["mc160.dev", "mc160.train"],
-    ["mc500.dev", "mc500.train"],
+    # ["mc160.dev", "mc160.train"],
+    # ["mc500.dev", "mc500.train"],
     "mc160.test",
     "mc500.test"
 ]
+
+def _baseline(stories, opts=None):
+    return bow.XVectorQA(
+        stories,
+        norm="question",
+        score_f=bow.score,
+        bow_f=bow.bow
+    )
 
 def _bowcoref(stories, opts=None):
     return bow.XVectorQA(
@@ -134,6 +142,14 @@ methods = [
     #        pickle=True
     #    )
     # ),
+    dict(
+       name="_baseline",
+       score=_baseline,
+       opts=dict(
+           testsets=testsets,
+           pickle=True
+       )
+    ),
     # dict(
     #     name="BOW NN",
     #     score=bow.predictAllNN,
@@ -171,13 +187,6 @@ methods = [
     #         mode=Question.MULTIPLE
     #     )
     # ),
-    dict(
-        name="Baseline (BOW) all",
-        score=bow.predictAll,
-        opts=dict(
-            testsets=testsets
-        )
-    ),
     # dict(
     #     name="SVM (BOW) train mc160train",
     #     score=svm.predict,
@@ -376,19 +385,20 @@ methods = [
     #         testsets=["mc500.test"]
     #     )
     # ),
-    # dict(
-    #     name="SVM (bigmix) mc160train",
-    #     score=svmreg.predict,
-    #     opts=dict(
-    #         features=[
-    #             _bowcoref,
-    #             _hypbow,
-    #             _bowall1
-    #         ],
-    #         trainsets=["mc160.train"],
-    #         testsets=["mc160.test"]
-    #     )
-    # ),
+    dict(
+        name="SVM (bigmix) mc160train",
+        score=svmreg.predict,
+        opts=dict(
+            features=[
+                _baseline,
+                _bowcoref,
+                _bowall2,
+                _bowall1
+            ],
+            trainsets=["mc160.train"],
+            testsets=["mc160.test"]
+        )
+    ),
     # dict(
     #     name="SVM (bigmix) mc500train",
     #     score=svmreg.predict,
@@ -419,10 +429,10 @@ for method in methods:
     mode = None if "mode" not in method["opts"] else method["opts"]["mode"]
 
     for testset in method["opts"]["testsets"]:
-        stories = list(storyparser(testset))
-        solutions = list(answers(testset))
-        true = YVectorQ(stories, solutions, mode=mode)
-        savePickle(true, "y" + str(testset))
+        stories = []
+        solutions = []
+        true = loadPickle("y" + str(testset))
+        # savePickle(true, "y" + str(testset))
         scores = loadOrPredict(method, stories, method["opts"], pickle_label=str(testset))
         print len(scores), len(true), mode
         grades = grading(scores, true)
