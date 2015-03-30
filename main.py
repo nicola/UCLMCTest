@@ -1,4 +1,4 @@
-from classes import storyparser, answers, loadOrPredict, Question
+from classes import storyparser, answers, loadOrPredict, Question, savePickle
 from grading import grading
 from vectors import results, YVectorQ
 from features import bow
@@ -150,13 +150,12 @@ methods = [
     # ),
     # dict(
     #     name="Baseline (BOW)",
-    #     score=bow.predictAll,
-    #     select_f=bow.bow_qa_select,
-    #     select_limit=3,
+    #     score=bow.predict,
+    #     # select_f=bow.bow_qa_select,
+    #     # select_limit=3,
     #     opts=dict(
     #         testsets=[
-    #             ["mc160.dev", "mc160.train"],
-    #             ["mc500.dev", "mc500.train"]
+    #             "mc160.test","mc500.test"
     #         ]
     #     )
     # ),
@@ -172,13 +171,13 @@ methods = [
     #         mode=Question.MULTIPLE
     #     )
     # ),
-    # dict(
-    #     name="Baseline (BOW) all",
-    #     score=bow.predictAll,
-    #     opts=dict(
-    #         testsets=testsets
-    #     )
-    # ),
+    dict(
+        name="Baseline (BOW) all",
+        score=bow.predictAll,
+        opts=dict(
+            testsets=testsets
+        )
+    ),
     # dict(
     #     name="SVM (BOW) train mc160train",
     #     score=svm.predict,
@@ -316,8 +315,7 @@ methods = [
     #     name="_bowall1",
     #     score=_bowall1,
     #     opts=dict(
-    #         testsets=testsets,
-    #         pickle=True
+    #         testsets=testsets
     #     )
     # ),
     # dict(
@@ -385,13 +383,10 @@ methods = [
     #         features=[
     #             _bowcoref,
     #             _hypbow,
-    #             _bowall1,
-    #             _bowall2,
-    #             _hypselect,
-    #             _hypselect2
+    #             _bowall1
     #         ],
-    #         trainsets=["mc500.train"],
-    #         testsets=["mc500.test"]
+    #         trainsets=["mc160.train"],
+    #         testsets=["mc160.test"]
     #     )
     # ),
     # dict(
@@ -427,6 +422,7 @@ for method in methods:
         stories = list(storyparser(testset))
         solutions = list(answers(testset))
         true = YVectorQ(stories, solutions, mode=mode)
+        savePickle(true, "y" + str(testset))
         scores = loadOrPredict(method, stories, method["opts"], pickle_label=str(testset))
         print len(scores), len(true), mode
         grades = grading(scores, true)

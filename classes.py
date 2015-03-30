@@ -453,6 +453,11 @@ def storyparser(datasets):
         for ln in strys:
             yield Story.fromcache(ln)
 
+def savePickle(vector, pickle_name):
+        fpath = os.path.abspath(os.path.dirname(__file__) + "/pickles/" + pickle_name + ".pickle")
+        with open(fpath, "wb") as fl:
+            print "creating pickle", pickle_name
+            pickle.dump(vector, fl)
 
 def loadOrPredict(method, stories, opts, pickle_label=None):
     if "pickle" in opts and pickle_label:
